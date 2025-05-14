@@ -489,6 +489,9 @@ def guest_routine_pdf():
                 if os.path.exists(path):
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
+        elif os.environ.get('RENDER'):
+            # Use the wrapper script on Render
+            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
         
         if config:
             # Create a temporary file
@@ -1452,6 +1455,9 @@ def download_routine_pdf():
                 if os.path.exists(path):
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
+        elif os.environ.get('RENDER'):
+            # Use the wrapper script on Render
+            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
         
         if config:
             # Create a temporary file
@@ -1721,6 +1727,9 @@ def download_optimized_routine_pdf():
                 if os.path.exists(path):
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
+        elif os.environ.get('RENDER'):
+            # Use the wrapper script on Render
+            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
         
         if config:
             # Create a temporary file
