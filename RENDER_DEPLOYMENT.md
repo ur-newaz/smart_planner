@@ -83,4 +83,22 @@ For production deployments, consider:
 - Setting up a custom domain
 - Configuring SSL certificates
 - Adding monitoring and alerts
-- Setting up automatic database backups 
+- Setting up automatic database backups
+
+## Limitations on Free Tier
+
+### PDF Generation
+
+The free tier of Render has several limitations that affect this application:
+
+1. **Read-only filesystem**: The container runs in a read-only environment, which prevents installing system packages like wkhtmltopdf.
+
+2. **PDF Generation**: PDF generation functionality will be limited on Render's free tier. The application includes a fallback mechanism that:
+   - Checks if wkhtmltopdf is available on the system
+   - If not, uses a simple wrapper script that creates empty PDF files
+   - In worst case, returns a plain text message indicating that PDF generation is not available
+
+For full PDF functionality, consider:
+- Using the application locally
+- Upgrading to Render's paid tier
+- Exploring alternative PDF generation options like client-side PDF generation 

@@ -490,8 +490,16 @@ def guest_routine_pdf():
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
         elif os.environ.get('RENDER'):
-            # Use the wrapper script on Render
-            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
+            # For Render deployment
+            if os.path.exists('/usr/bin/wkhtmltopdf'):
+                config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+            elif os.path.exists('/tmp/bin/wkhtmltopdf-wrapper'):
+                config = pdfkit.configuration(wkhtmltopdf='/tmp/bin/wkhtmltopdf-wrapper')
+            else:
+                # Simple fallback for Render free tier
+                response = make_response("PDF generation is not available on this deployment. Please run the application locally for PDF features.")
+                response.headers['Content-Type'] = 'text/plain'
+                return response
         
         if config:
             # Create a temporary file
@@ -1456,8 +1464,16 @@ def download_routine_pdf():
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
         elif os.environ.get('RENDER'):
-            # Use the wrapper script on Render
-            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
+            # For Render deployment
+            if os.path.exists('/usr/bin/wkhtmltopdf'):
+                config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+            elif os.path.exists('/tmp/bin/wkhtmltopdf-wrapper'):
+                config = pdfkit.configuration(wkhtmltopdf='/tmp/bin/wkhtmltopdf-wrapper')
+            else:
+                # Simple fallback for Render free tier
+                response = make_response("PDF generation is not available on this deployment. Please run the application locally for PDF features.")
+                response.headers['Content-Type'] = 'text/plain'
+                return response
         
         if config:
             # Create a temporary file
@@ -1728,8 +1744,16 @@ def download_optimized_routine_pdf():
                     config = pdfkit.configuration(wkhtmltopdf=path)
                     break
         elif os.environ.get('RENDER'):
-            # Use the wrapper script on Render
-            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf-wrapper')
+            # For Render deployment
+            if os.path.exists('/usr/bin/wkhtmltopdf'):
+                config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+            elif os.path.exists('/tmp/bin/wkhtmltopdf-wrapper'):
+                config = pdfkit.configuration(wkhtmltopdf='/tmp/bin/wkhtmltopdf-wrapper')
+            else:
+                # Simple fallback for Render free tier
+                response = make_response("PDF generation is not available on this deployment. Please run the application locally for PDF features.")
+                response.headers['Content-Type'] = 'text/plain'
+                return response
         
         if config:
             # Create a temporary file
