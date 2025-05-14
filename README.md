@@ -28,7 +28,7 @@ A comprehensive web application for managing academic schedules, optimizing stud
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/schedule-planner.git
+git clone https://github.com/ur-newaz/smart_planner.git
 cd schedule-planner
 ```
 
