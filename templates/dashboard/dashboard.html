@@ -25,7 +25,7 @@
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                    <tr class="bg-{{ theme.header }} text-{{ theme.header_text }}">
+                    <tr class="table-{{ theme_name }}">
                         <th style="width: 15%;">Time</th>
                         {% for day in days %}
                         <th style="width: 14%;">{{ day }}</th>
@@ -35,11 +35,11 @@
                 <tbody>
                     {% for slot in time_slots %}
                     <tr>
-                        <td class="fw-bold bg-{{ theme.secondary }} text-{{ theme.text }}">{{ slot.start }} - {{ slot.end }}</td>
+                        <td class="fw-bold time-slot-cell">{{ slot.start }} - {{ slot.end }}</td>
                         {% for day in days %}
                         <td>
                             {% for course in routine[day][slot.start+'-'+slot.end] %}
-                            <div class="p-2 mb-1 rounded bg-{{ theme.primary }} text-white">
+                            <div class="p-2 mb-1 rounded course-item">
                                 <strong>{{ course.course_code }}</strong><br>
                                 <small>{{ course.start_time }} - {{ course.end_time }}</small>
                             </div>
@@ -121,4 +121,33 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block dashboard_extra_head %}
+<style>
+.time-slot-cell {
+    background-color: {{ theme.secondary }};
+    color: {{ theme.text }};
+}
+
+.course-item {
+    background-color: {{ theme.primary }};
+    color: white;
+}
+
+.table-blue th {
+    background-color: #0a58ca;
+    color: white;
+}
+
+.table-green th {
+    background-color: #0f5132;
+    color: white;
+}
+
+.table-purple th {
+    background-color: #5a23c8;
+    color: white;
+}
+</style>
 {% endblock %} 

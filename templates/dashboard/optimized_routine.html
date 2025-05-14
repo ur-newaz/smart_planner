@@ -114,7 +114,7 @@
                 {% if optimized_routine %}
                 <div class="table-responsive">
                     <table class="table table-bordered">
-                        <thead class="table-{{ theme.name|lower }}">
+                        <thead class="table-{{ theme_name }}">
                             <tr>
                                 <th style="width: 16%">Time</th>
                                 {% for day in days %}
@@ -136,7 +136,7 @@
                                     {% else %}
                                         {% set slot_key = day + '_' + hour|string %}
                                         {% if slot_key in optimized_routine %}
-                                            <div class="course-item" style="background-color: {{ theme.primary }}; color: white;">
+                                            <div class="course-item">
                                                 {{ optimized_routine[slot_key] }}
                                             </div>
                                         {% endif %}
@@ -165,44 +165,46 @@
 </div>
 {% endblock %}
 
-{% block extra_head %}
+{% block dashboard_extra_head %}
 <style>
-    .time-cell {
-        background-color: {{ theme.secondary }};
-        color: {{ theme.text }};
-        font-weight: bold;
-    }
-    
-    .table-blue th {
-        background-color: #0a58ca;
-        color: white;
-    }
-    
-    .table-green th {
-        background-color: #0f5132;
-        color: white;
-    }
-    
-    .table-purple th {
-        background-color: #5a23c8;
-        color: white;
-    }
-    
-    .course-item {
-        padding: 6px;
-        border-radius: 4px;
-        text-align: center;
-        font-weight: 500;
-    }
-    
-    .dinner-slot {
-        background-color: #fff3cd;
-    }
-    
-    .dinner-label {
-        text-align: center;
-        color: #664d03;
-        font-weight: 500;
-    }
+.time-cell {
+    background-color: {{ theme.secondary }};
+    color: {{ theme.text }};
+    font-weight: bold;
+}
+
+.table-blue th {
+    background-color: #0a58ca;
+    color: white;
+}
+
+.table-green th {
+    background-color: #0f5132;
+    color: white;
+}
+
+.table-purple th {
+    background-color: #5a23c8;
+    color: white;
+}
+
+.course-item {
+    padding: 6px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+    background-color: {{ theme.primary }};
+    color: white;
+}
+
+.dinner-slot {
+    background-color: #fff3cd;
+}
+
+.dinner-label {
+    text-align: center;
+    color: #664d03;
+    font-weight: 500;
+}
 </style>
 {% endblock %} 
