@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Course {{ course.course_code }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_departments') }}">Manage Departments</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_view_department', department_name=course.department) }}">{{ course.department }}</a></li>
+                    <li class="breadcrumb-item active">Edit {{ course.course_code }}</li>
+                </ol>
+            </nav>
+            <h2><i class="bi bi-pencil-square"></i> Edit Course: {{ course.course_code }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Course Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.admin_edit_course', course_id=course.id) }}">
+                        <div class="mb-3">
+                            <label for="course_code" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="course_code" name="course_code" value="{{ course.course_code }}" required>
+                            <div class="form-text">Enter a unique course code (e.g., CSE101, MATH202)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="course_weight" class="form-label">Course Weight</label>
+                            <input type="number" class="form-control" id="course_weight" name="course_weight" min="0.1" step="0.1" value="{{ course.weight }}" required>
+                            <div class="form-text">Enter the course weight (e.g., 1.0, 1.5, 2.0)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" value="{{ course.department }}" readonly disabled>
+                            <div class="form-text">Department cannot be changed. To move the course to another department, delete it and recreate it in the new department.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('main.admin_view_department', department_name=course.department) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

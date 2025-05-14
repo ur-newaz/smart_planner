@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Admin Dashboard</h1>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Welcome, {{ current_user.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">This is the admin control panel. From here you can manage users, courses, and system settings.</p>
+                </div>
+            </div>
+            
+            <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-person-vcard"></i> Inquire User</h5>
+                            <p class="card-text">Look up user information using their student ID.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="{{ url_for('main.admin_inquire_user') }}" class="btn btn-outline-primary">Go to Inquire User</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-person-x"></i> Ban User</h5>
+                            <p class="card-text">Remove a user and all associated data from the system.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="{{ url_for('main.admin_ban_user') }}" class="btn btn-outline-danger">Go to Ban User</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-chat-left-dots"></i> Check Queries</h5>
+                            <p class="card-text">View and respond to user messages and inquiries.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="{{ url_for('main.admin_check_queries') }}" class="btn btn-outline-primary">Go to Queries</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-building"></i> Manage Departments</h5>
+                            <p class="card-text">Add, edit, or delete departments and courses.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="{{ url_for('main.admin_departments') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-building"></i> Manage Departments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="mb-3">Quick Stats</h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card bg-primary text-white shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Total Users</h6>
+                                    <h2 class="mt-2 mb-0">{{ stats.user_count }}</h2>
+                                </div>
+                                <i class="bi bi-people fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-success text-white shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Departments</h6>
+                                    <h2 class="mt-2 mb-0">{{ stats.department_count }}</h2>
+                                </div>
+                                <i class="bi bi-building fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-info text-white shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">New Messages</h6>
+                                    <h2 class="mt-2 mb-0">{{ stats.new_message_count }}</h2>
+                                </div>
+                                <i class="bi bi-envelope fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %} 

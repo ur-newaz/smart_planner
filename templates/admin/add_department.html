@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Add Department{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Department</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Add Department and Courses</h1>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Step 1: Department Information</h3>
+                </div>
+                <div class="card-body">
+                    {% if not step2 %}
+                    <form method="POST" action="{{ url_for('main.admin_add_department') }}" id="departmentForm">
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="department_name" class="form-label">Department Name</label>
+                                <input type="text" class="form-control" id="department_name" name="department_name" 
+                                       placeholder="Enter department name" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="course_count" class="form-label">Number of Courses</label>
+                                <input type="number" class="form-control" id="course_count" name="course_count" 
+                                       min="1" max="50" placeholder="Enter number of courses" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" name="action" value="step1">Continue to Add Courses</button>
+                    </form>
+                    {% endif %}
+                    
+                    {% if step2 %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Now add the courses for the <strong>{{ department_name }}</strong> department. You need to add <strong>{{ course_count }}</strong> courses.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if step2 %}
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Step 2: Add Courses</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.admin_add_department_courses') }}" id="courseForm">
+                        <input type="hidden" name="department_name" value="{{ department_name }}">
+                        <input type="hidden" name="course_count" value="{{ course_count }}">
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course Code</th>
+                                        <th>Course Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in range(1, course_count + 1) %}
+                                    <tr>
+                                        <td>{{ i }}</td>
+                                        <td>
+                                            <input type="text" class="form-control" id="course_code_{{ i }}" 
+                                                   name="course_code_{{ i }}" placeholder="e.g., CS101" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="course_weight_{{ i }}" 
+                                                   name="course_weight_{{ i }}" step="0.1" min="0.1" max="10" 
+                                                   placeholder="e.g., 3.0" required>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{{ url_for('main.admin_add_department') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Step 1
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Add Courses <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if departments %}
+            <div class="card shadow mt-4">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">Existing Departments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Courses</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in departments %}
+                                <tr>
+                                    <td>{{ dept.name }}</td>
+                                    <td>{{ dept.course_count }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                onclick="toggleCourses('{{ dept.name }}')">
+                                            <i class="bi bi-eye"></i> View Courses
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="courses_{{ dept.name | replace(' ', '_') }}" style="display: none;">
+                                    <td colspan="3">
+                                        <table class="table table-sm table-bordered mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Course Code</th>
+                                                    <th>Weight</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for course in dept.courses %}
+                                                <tr>
+                                                    <td>{{ course.course_code }}</td>
+                                                    <td>{{ course.weight }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleCourses(deptName) {
+        const rowId = 'courses_' + deptName.replace(/ /g, '_');
+        const row = document.getElementById(rowId);
+        if (row.style.display === 'none') {
+            row.style.display = 'table-row';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %} 

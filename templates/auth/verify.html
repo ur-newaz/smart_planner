@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Your Account{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center mb-0">Verify Your Account</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p>We've sent a verification code to <strong>{{ email }}</strong>.</p>
+                    <p>Please check your email and enter the code below to verify your account.</p>
+                </div>
+                
+                <form method="POST" action="{{ url_for('auth.verify') }}">
+                    <div class="mb-3">
+                        <label for="otp" class="form-label">Verification Code</label>
+                        <input type="text" class="form-control form-control-lg text-center" id="otp" name="otp" required placeholder="Enter 6-digit code" maxlength="6" style="letter-spacing: 5px; font-size: 24px;">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Verify Account</button>
+                        <a href="{{ url_for('auth.resend_otp') }}" class="btn btn-outline-secondary">Resend Code</a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Didn't receive the code? Check your spam folder or <a href="{{ url_for('auth.resend_otp') }}">request a new one</a>.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

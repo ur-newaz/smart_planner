@@ -1,0 +1,124 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Class Routine{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar3"></i> Your Class Routine</h2>
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-palette"></i> Theme
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ url_for('main.set_theme', theme='blue') }}">Blue Theme</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('main.set_theme', theme='green') }}">Green Theme</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('main.set_theme', theme='purple') }}">Purple Theme</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-{{ theme.primary }} text-white">
+        <h5 class="mb-0">Weekly Schedule</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="bg-{{ theme.header }} text-{{ theme.header_text }}">
+                        <th style="width: 15%;">Time</th>
+                        {% for day in days %}
+                        <th style="width: 14%;">{{ day }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slot in time_slots %}
+                    <tr>
+                        <td class="fw-bold bg-{{ theme.secondary }} text-{{ theme.text }}">{{ slot.start }} - {{ slot.end }}</td>
+                        {% for day in days %}
+                        <td>
+                            {% for course in routine[day][slot.start+'-'+slot.end] %}
+                            <div class="p-2 mb-1 rounded bg-{{ theme.primary }} text-white">
+                                <strong>{{ course.course_code }}</strong><br>
+                                <small>{{ course.start_time }} - {{ course.end_time }}</small>
+                            </div>
+                            {% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-end">
+        <a href="{{ url_for('main.download_routine_pdf') }}" class="btn btn-primary">
+            <i class="bi bi-download"></i> Download PDF
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-{{ theme.primary }} text-white">
+                <h5 class="mb-0">Course Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Days</th>
+                                <th>Time</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ course.course_code }}</td>
+                                <td>{{ course.course_day }}</td>
+                                <td>{{ course.course_time_start.strftime('%H:%M') }} - {{ course.course_time_end.strftime('%H:%M') }}</td>
+                                <td>{{ course.current_weight }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-{{ theme.primary }} text-white">
+                <h5 class="mb-0">Upcoming Events</h5>
+            </div>
+            <div class="card-body">
+                {% if events %}
+                <ul class="list-group">
+                    {% for event in events %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">{{ event.title }}</h6>
+                            <small class="text-muted">{{ event.date.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ event.time.strftime('%H:%M') }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-center text-muted my-4">No upcoming events</p>
+                <div class="text-center">
+                    <a href="{{ url_for('main.add_event') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-calendar-plus"></i> Add New Event
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

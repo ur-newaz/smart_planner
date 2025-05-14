@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Add Course to {{ department_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_departments') }}">Manage Departments</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_view_department', department_name=department_name) }}">{{ department_name }}</a></li>
+                    <li class="breadcrumb-item active">Add Course</li>
+                </ol>
+            </nav>
+            <h2><i class="bi bi-journal-plus"></i> Add Course to {{ department_name }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">New Course Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.admin_add_course', department_name=department_name) }}">
+                        <div class="mb-3">
+                            <label for="course_code" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="course_code" name="course_code" required>
+                            <div class="form-text">Enter a unique course code (e.g., CSE101, MATH202)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="course_weight" class="form-label">Course Weight</label>
+                            <input type="number" class="form-control" id="course_weight" name="course_weight" min="0.1" step="0.1" value="1.0" required>
+                            <div class="form-text">Enter the course weight (e.g., 1.0, 1.5, 2.0)</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('main.admin_view_department', department_name=department_name) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add Course
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

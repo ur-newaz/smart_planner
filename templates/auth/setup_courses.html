@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Setup Your Courses{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Setup Your Courses</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h5 class="alert-heading">Welcome, {{ user.name }}!</h5>
+                        <p>Your account has been verified successfully. Now, let's set up your courses.</p>
+                    </div>
+                    
+                    {% if not show_courses %}
+                    <!-- Step 1: Enter number of courses -->
+                    <form method="POST" action="{{ url_for('auth.setup_courses') }}">
+                        <input type="hidden" name="action" value="set_count">
+                        <div class="mb-4">
+                            <label for="course_count" class="form-label">How many courses do you have this semester?</label>
+                            <input type="number" class="form-control" id="course_count" name="course_count" min="1" max="10" required>
+                            <div class="form-text">Enter a number between 1 and 10</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Continue</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- Step 2: Select courses -->
+                    <form method="POST" action="{{ url_for('auth.setup_courses') }}">
+                        <input type="hidden" name="action" value="save_courses">
+                        
+                        <div class="alert alert-info">
+                            <p>Please select your {{ course_count }} courses from your department ({{ user.department }}).</p>
+                        </div>
+                        
+                        {% for i in range(1, course_count + 1) %}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Course {{ i }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="course_code_{{ i }}" class="form-label">Course</label>
+                                    <select class="form-select" id="course_code_{{ i }}" name="course_code_{{ i }}" required>
+                                        <option value="" selected disabled>Select a course</option>
+                                        {% for course in department_courses %}
+                                        <option value="{{ course.course_code }}">{{ course.course_code }} ({{ course.weight }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Days</label>
+                                    <div class="row">
+                                        {% for day in days %}
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="course_days_{{ i }}" value="{{ day }}" id="day_{{ i }}_{{ loop.index }}">
+                                                <label class="form-check-label" for="day_{{ i }}_{{ loop.index }}">
+                                                    {{ day }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="course_slot_{{ i }}" class="form-label">Time Slot</label>
+                                    <select class="form-select" id="course_slot_{{ i }}" name="course_slot_{{ i }}" required>
+                                        <option value="" selected disabled>Select a time slot</option>
+                                        {% for slot in time_slots %}
+                                        <option value="{{ slot.id }}">{{ slot.label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save Courses</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

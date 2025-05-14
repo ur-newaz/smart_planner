@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Guest Routine Setup{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Guest Routine Setup</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p>Welcome to the Schedule Planner Guest Mode! You can create a temporary class routine without registration.</p>
+                        <p class="mb-0">Your data will not be saved permanently and will be lost when you close your browser.</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('main.guest_routine_setup') }}">
+                        <div class="mb-4">
+                            <label for="course_count" class="form-label">How many courses do you have?</label>
+                            <input type="number" class="form-control" id="course_count" name="course_count" min="1" max="10" required>
+                            <div class="form-text">Enter a number between 1 and 10</div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('main.home') }}" class="btn btn-secondary me-2">
+                                <i class="bi bi-arrow-left"></i> Back to Home
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-arrow-right"></i> Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

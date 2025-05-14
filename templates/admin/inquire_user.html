@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Inquire User{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Inquire User</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Inquire User</h1>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Search User</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.admin_inquire_user') }}">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <label for="student_id" class="form-label">Student ID</label>
+                                <input type="text" class="form-control" id="student_id" name="student_id" 
+                                       placeholder="Enter student ID" value="{{ request.form.get('student_id', '') }}" required>
+                            </div>
+                            <div class="col-md-4 mt-md-4">
+                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if user %}
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">User Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Personal Information</h4>
+                            <table class="table">
+                                <tr>
+                                    <th style="width: 30%">Name</th>
+                                    <td>{{ user.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <td>{{ user.student_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Department</th>
+                                    <td>{{ user.department }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date of Birth</th>
+                                    <td>{{ user.date_of_birth.strftime('%B %d, %Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account Status</th>
+                                    <td>
+                                        {% if user.is_verified %}
+                                            <span class="badge bg-success">Verified</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Not Verified</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Account Created</th>
+                                    <td>{{ user.created_at.strftime('%B %d, %Y, %I:%M %p') }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Courses Enrolled</h4>
+                            {% if courses %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Department</th>
+                                            <th>Day</th>
+                                            <th>Time</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in courses %}
+                                        <tr>
+                                            <td>{{ course.course_code }}</td>
+                                            <td>{{ course.department }}</td>
+                                            <td>{{ course.course_day }}</td>
+                                            <td>{{ course.course_time_start.strftime('%I:%M %p') }} - {{ course.course_time_end.strftime('%I:%M %p') }}</td>
+                                            <td>{{ course.current_weight }}/{{ course.actual_weight }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i> No courses found for this user.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% elif searched %}
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i> No user found with the specified Student ID.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %} 

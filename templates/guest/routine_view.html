@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Class Routine{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card shadow mb-4">
+                <div class="card-header theme-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Your Class Routine</h3>
+                        <div>
+                            <a href="{{ url_for('main.guest_routine_pdf') }}" class="btn theme-btn">
+                                <i class="bi bi-download me-1"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Theme Selection -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-3"><strong>Select Theme:</strong></span>
+                            {% for theme_id, theme_data in themes.items() %}
+                            <a href="{{ url_for('main.guest_set_theme', theme=theme_id) }}" class="btn btn-sm me-2 theme-selector-btn {% if theme == theme_id %}active{% endif %}">
+                                {{ theme_data.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Routine Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="text-center theme-header-row">
+                                    <th class="time-col">Time</th>
+                                    {% for day in days %}
+                                    <th class="day-col">{{ day }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slot in time_slots %}
+                                <tr>
+                                    <td class="text-center align-middle time-slot-cell">
+                                        {{ slot.start }} - {{ slot.end }}
+                                    </td>
+                                    {% for day in days %}
+                                    <td class="align-middle {% if routine[day][slot.start + '-' + slot.end] %}theme-cell{% endif %}">
+                                        {% if routine[day][slot.start + '-' + slot.end] %}
+                                            {% for course in routine[day][slot.start + '-' + slot.end] %}
+                                            <div class="text-center p-1 mb-1 course-item">
+                                                {{ course.course_code }}<br>
+                                                <small>{{ course.start_time }} - {{ course.end_time }}</small>
+                                            </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('main.guest_course_input') }}" class="btn btn-secondary me-2">
+                            <i class="bi bi-arrow-left"></i> Back to Courses
+                        </a>
+                        <a href="{{ url_for('main.guest_reset') }}" class="btn btn-warning">
+                            <i class="bi bi-arrow-repeat"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .theme-header {
+        background-color: {{ themes[theme].header }};
+        color: {{ themes[theme].header_text }};
+    }
+    
+    .theme-btn {
+        background-color: {{ themes[theme].primary }};
+        color: white;
+    }
+    
+    .theme-selector-btn {
+        background-color: {{ themes[theme].primary }};
+        color: white;
+    }
+    
+    .theme-header-row {
+        background-color: {{ themes[theme].header }};
+        color: {{ themes[theme].header_text }};
+    }
+    
+    .time-col, .day-col {
+        width: 15%;
+    }
+    
+    .day-col {
+        width: 14%;
+    }
+    
+    .time-slot-cell {
+        background-color: {{ themes[theme].secondary }};
+        color: {{ themes[theme].text }};
+        font-weight: bold;
+    }
+    
+    .theme-cell {
+        background-color: {{ themes[theme].secondary }};
+        color: {{ themes[theme].text }};
+    }
+    
+    .course-item {
+        background-color: {{ themes[theme].primary }};
+        color: white;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %} 

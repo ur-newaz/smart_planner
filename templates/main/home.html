@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 text-center">
+            <h1 class="display-3 mb-4">Welcome to Schedule Planner</h1>
+            <p class="lead mb-5">The smart way to plan your academic schedule, optimize your course load, and manage your time effectively.</p>
+            
+            {% if current_user.is_authenticated %}
+                <div class="row mt-5">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title">Welcome back, {{ current_user.name }}!</h2>
+                                <p class="card-text">You're already logged in. Continue to your dashboard to manage your schedule.</p>
+                                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+                    <div class="col">
+                        <div class="card h-100 shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Sign Up</h5>
+                                <p class="card-text">Create a new account to get started with Schedule Planner. Manage your courses and optimize your schedule.</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pb-4">
+                                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Log In</h5>
+                                <p class="card-text">Already have an account? Log in to continue managing your schedule and courses.</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pb-4">
+                                <a href="{{ url_for('auth.login') }}" class="btn btn-success">Log In</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Guest User</h5>
+                                <p class="card-text">Try out Schedule Planner as a guest. Limited features, but no registration required.</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pb-4">
+                                <a href="{{ url_for('main.guest') }}" class="btn btn-secondary">Continue as Guest</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row mt-5 pt-5">
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-calendar-check fs-1"></i>
+                <h3 class="mt-3">Plan Your Schedule</h3>
+                <p>Easily plan your academic schedule with our intuitive interface.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-lightning-charge fs-1"></i>
+                <h3 class="mt-3">Optimize Course Load</h3>
+                <p>Balance your course load to maximize success and minimize stress.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-clock fs-1"></i>
+                <h3 class="mt-3">Save Time</h3>
+                <p>Spend less time planning and more time focusing on your studies.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %} 

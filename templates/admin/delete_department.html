@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Department: {{ department_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.admin_departments') }}">Manage Departments</a></li>
+                    <li class="breadcrumb-item active">Delete {{ department_name }}</li>
+                </ol>
+            </nav>
+            <h2><i class="bi bi-trash"></i> Delete Department: {{ department_name }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirm Deletion</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">Warning!</h5>
+                        <p>You are about to delete the <strong>{{ department_name }}</strong> department and all its courses. This action cannot be undone.</p>
+                    </div>
+                    
+                    <h5 class="mt-4">Courses to be deleted:</h5>
+                    <ul class="list-group mb-4">
+                        {% for course in courses %}
+                        <li class="list-group-item">{{ course.course_code }} (Weight: {{ course.weight }})</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <form method="POST" action="{{ url_for('main.admin_delete_department', department_name=department_name) }}">
+                        <div class="mb-4">
+                            <label for="confirm" class="form-label">Type <strong>{{ department_name }}</strong> to confirm deletion:</label>
+                            <input type="text" class="form-control" id="confirm" name="confirm" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('main.admin_departments') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete Department
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

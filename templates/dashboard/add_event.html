@@ -1,0 +1,272 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Add Event{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar-plus"></i> Add & Manage Events</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Add New Event</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('main.save_event') }}">
+                    <div class="mb-3">
+                        <label for="course_id" class="form-label">Course</label>
+                        <select class="form-select" id="course_id" name="course_id" required>
+                            <option value="" selected disabled>Select a course</option>
+                            {% for course in courses %}
+                            <option value="{{ course.id }}">{{ course.course_code }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="event_type" class="form-label">Event Type</label>
+                        <select class="form-select" id="event_type" name="event_type" required>
+                            <option value="" selected disabled>Select event type</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="quiz">Quiz</option>
+                            <option value="midterm">Midterm Exam</option>
+                            <option value="final">Final Exam</option>
+                        </select>
+                        <div class="form-text" id="event_type_help">
+                            <ul class="small ps-3 mb-0">
+                                <li>Assignment: Can be added up to 7 days before</li>
+                                <li>Quiz: Can be added up to 3 days before</li>
+                                <li>Midterm/Final: Can be added up to 5 days before</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="event_date" class="form-label">Event Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="event_date" name="event_date" required>
+                        <div class="form-text mt-1" id="date_help">Select the date and time when the event is due.</div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Add Event
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <strong>Note:</strong> Re-optimize your routine after adding events to reflect updated course weights.
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Event Types & Weights</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Assignment</span>
+                        <span class="badge bg-primary rounded-pill">+1.5 Weight</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Quiz</span>
+                        <span class="badge bg-primary rounded-pill">+2.5 Weight</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Midterm Exam</span>
+                        <span class="badge bg-primary rounded-pill">+3.5 Weight</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Final Exam</span>
+                        <span class="badge bg-primary rounded-pill">+4.0 Weight</span>
+                    </li>
+                    <li class="list-group-item">
+                        <small class="text-muted">Completing an event reduces the weight by the event amount + 0.5 bonus.</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Upcoming Events</h5>
+            </div>
+            <div class="card-body">
+                {% if active_events %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in active_events %}
+                            <tr>
+                                <td>{{ event.course.course_code }}</td>
+                                <td>{{ event.title }}</td>
+                                <td>
+                                    <span class="badge {% if event.event_type == 'assignment' %}bg-success{% elif event.event_type == 'quiz' %}bg-info{% elif event.event_type == 'midterm' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ event.event_type|capitalize }}
+                                    </span>
+                                </td>
+                                <td>{{ event.event_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('main.complete_event', event_id=event.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-check fs-1 text-muted"></i>
+                    <h4 class="mt-3">No Upcoming Events</h4>
+                    <p class="text-muted">You don't have any active events scheduled. Add an event using the form on the left.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if completed_events %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Completed Events</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Completed On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in completed_events %}
+                            <tr>
+                                <td>{{ event.course.course_code }}</td>
+                                <td>{{ event.title }}</td>
+                                <td>
+                                    <span class="badge {% if event.event_type == 'assignment' %}bg-success{% elif event.event_type == 'quiz' %}bg-info{% elif event.event_type == 'midterm' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ event.event_type|capitalize }}
+                                    </span>
+                                </td>
+                                <td>{{ event.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if expired_events %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Expired Events</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Due Date (Expired)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in expired_events %}
+                            <tr>
+                                <td>{{ event.course.course_code }}</td>
+                                <td>{{ event.title }}</td>
+                                <td>
+                                    <span class="badge {% if event.event_type == 'assignment' %}bg-success{% elif event.event_type == 'quiz' %}bg-info{% elif event.event_type == 'midterm' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ event.event_type|capitalize }}
+                                    </span>
+                                </td>
+                                <td>{{ event.event_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const eventTypeSelect = document.getElementById('event_type');
+        const eventDateInput = document.getElementById('event_date');
+        
+        // Set minimum date based on event type
+        eventTypeSelect.addEventListener('change', function() {
+            const now = new Date();
+            let minDate;
+            
+            // Clear the date input if it's already filled
+            eventDateInput.value = '';
+            
+            switch(this.value) {
+                case 'assignment':
+                    // Can be added up to 7 days before
+                    minDate = new Date(now.getTime());
+                    break;
+                case 'quiz':
+                    // Can be added up to 3 days before
+                    minDate = new Date(now.getTime());
+                    break;
+                case 'midterm':
+                case 'final':
+                    // Can be added up to 5 days before
+                    minDate = new Date(now.getTime());
+                    break;
+                default:
+                    minDate = now;
+            }
+            
+            // Format the date for datetime-local input
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            const hours = String(minDate.getHours()).padStart(2, '0');
+            const minutes = String(minDate.getMinutes()).padStart(2, '0');
+            
+            // Set the min attribute
+            eventDateInput.min = `${year}-${month}-${day}T${hours}:${minutes}`;
+        });
+    });
+</script>
+{% endblock %} 
